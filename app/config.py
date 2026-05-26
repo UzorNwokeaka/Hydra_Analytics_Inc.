@@ -1,0 +1,20 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+class Settings:
+    PINECONE_API_KEY: str = os.getenv("PINECONE_API_KEY", "")
+    PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME", "hydra-compliance-index")
+    PINECONE_CLOUD: str = os.getenv("PINECONE_CLOUD", "aws")
+    PINECONE_REGION: str = os.getenv("PINECONE_REGION", "us-east-1")
+
+    EMBEDDING_MODEL: str = os.getenv(
+        "EMBEDDING_MODEL",
+        "sentence-transformers/all-MiniLM-L6-v2"
+    )
+    EMBEDDING_DIMENSION: int = int(os.getenv("EMBEDDING_DIMENSION", "384"))
+
+
+settings = Settings()
