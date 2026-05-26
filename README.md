@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is an AI-powered Regulatory Compliance Intelligence Platform built for Hydra Analytics. It uses Retrieval-Augmented Generation to support semantic legal search, compliance question answering, regulatory summarisation, and source-traceable legal intelligence.
+This project is an AI-powered Regulatory Compliance Intelligence Platform built for Hydra Analytics. It uses Retrieval-Augmented Generation to support semantic legal search, compliance question answering, regulatory summarisation, and source-traceable legal intelligence
 
 ## Business Problem
 
