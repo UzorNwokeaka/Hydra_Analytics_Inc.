@@ -21,6 +21,7 @@ Title: {metadata.get("title", "Unknown")}
 Jurisdiction: {metadata.get("jurisdiction", "Unknown")}
 Category: {metadata.get("category", "Unknown")}
 Source URL: {metadata.get("source_url", "Not provided")}
+Chunk Index: {metadata.get("chunk_index", "Unknown")}
 Similarity Score: {match.get("score")}
 
 Legal Text:
@@ -31,11 +32,30 @@ Legal Text:
     return "\n---\n".join(context_blocks)
 
 
+def build_sources(matches) -> list[dict]:
+    sources = []
+
+    for i, match in enumerate(matches, start=1):
+        metadata = match.get("metadata", {})
+
+        sources.append({
+            "source_number": i,
+            "title": metadata.get("title"),
+            "jurisdiction": metadata.get("jurisdiction"),
+            "category": metadata.get("category"),
+            "source_url": metadata.get("source_url"),
+            "chunk_index": metadata.get("chunk_index"),
+            "chunk_text": metadata.get("chunk_text"),
+            "score": match.get("score")
+        })
+
+    return sources
+
+
 def generate_grounded_answer(question: str, context: str) -> str:
     if not context.strip():
         return (
-            "The available compliance documents do not provide enough information "
-            "to answer this question reliably.\n\n"
+            "Information not found in the available regulatory knowledge base.\n\n"
             + LEGAL_DISCLAIMER
         )
 
@@ -46,11 +66,12 @@ Answer the user's question using ONLY the retrieved legal context below.
 
 Strict rules:
 1. Do not invent laws, deadlines, penalties, obligations, or legal interpretations.
-2. If the context does not contain enough information, say so clearly.
+2. If the retrieved context does not contain enough information, say:
+   "Information not found in the available regulatory knowledge base."
 3. Use a professional compliance analyst tone.
-4. Mention the source title and jurisdiction where relevant.
-5. Keep the answer clear, structured, and practical.
-6. End with the compliance disclaimer.
+4. Cite sources inline using this format: [Source 1], [Source 2].
+5. Keep the answer practical, structured, and easy for compliance analysts to verify.
+6. Do not provide personal legal advice.
 
 Retrieved Legal Context:
 {context}
@@ -89,21 +110,11 @@ def answer_question(
 
     context = build_context(matches)
     answer = generate_grounded_answer(question, context)
-
-    sources = []
-
-    for match in matches:
-        metadata = match.get("metadata", {})
-        sources.append({
-            "title": metadata.get("title"),
-            "jurisdiction": metadata.get("jurisdiction"),
-            "category": metadata.get("category"),
-            "source_url": metadata.get("source_url"),
-            "score": match.get("score")
-        })
+    sources = build_sources(matches)
 
     return {
         "question": question,
         "answer": answer,
-        "sources": sources
+        "sources": sources,
+        "source_count": len(sources)
     }

@@ -1,0 +1,7 @@
+The healthcare compliance policy requires all staff to protect patient information and follow strict confidentiality rules. Patient data must only be accessed by authorised personnel for legitimate care, administrative, or legal purposes.
+
+Staff must report suspected data breaches immediately to the compliance officer. Any unauthorised access, sharing, or disclosure of patient information must be investigated and documented.
+
+The organisation must maintain audit logs showing who accessed patient records, when the access occurred, and why the access was necessary.
+
+Patient information must be stored securely, encrypted where appropriate, and retained only for the period required by applicable healthcare regulations and internal retention policies.

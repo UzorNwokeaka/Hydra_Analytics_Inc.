@@ -29,7 +29,7 @@ Summary:
 """
 
     response = ollama.chat(
-        model="mistral",
+        model="llama3.2:3b",
         messages=[
             {
                 "role": "user",

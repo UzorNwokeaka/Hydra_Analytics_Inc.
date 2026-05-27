@@ -1,0 +1,40 @@
+[
+  {
+    "question": "What principles apply to processing personal data?",
+    "jurisdiction": "European Union",
+    "category": "Data Privacy",
+    "expected_source_keyword": "GDPR Article 5",
+    "expected_answer_keywords": [
+      "lawfully",
+      "fairly",
+      "transparently",
+      "accurate",
+      "securely"
+    ]
+  },
+  {
+    "question": "What checks are required for customer due diligence?",
+    "jurisdiction": "United Kingdom",
+    "category": "Anti-Money Laundering",
+    "expected_source_keyword": "AML",
+    "expected_answer_keywords": [
+      "identify",
+      "verify",
+      "beneficial ownership",
+      "ongoing monitoring"
+    ]
+  },
+  {
+    "question": "What should organisations disclose in ESG reports?",
+    "jurisdiction": "European Union",
+    "category": "ESG Reporting",
+    "expected_source_keyword": "ESG",
+    "expected_answer_keywords": [
+      "environmental",
+      "social",
+      "governance",
+      "climate",
+      "sustainability"
+    ]
+  }
+]
