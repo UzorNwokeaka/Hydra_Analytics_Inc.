@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      TESTING: "true"
       PINECONE_API_KEY: dummy_key_for_ci
       PINECONE_INDEX_NAME: hydra-compliance-index
       PINECONE_CLOUD: aws
