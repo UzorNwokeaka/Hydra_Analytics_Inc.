@@ -8,3 +8,4 @@ pinecone
 pypdf
 langchain-text-splitters
 ollama
+groq

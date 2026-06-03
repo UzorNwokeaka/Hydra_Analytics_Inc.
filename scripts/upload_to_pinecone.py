@@ -65,7 +65,7 @@ def upload_document_to_pinecone(
         print(f"SKIPPED: No chunks created -> {file_path}")
         return
 
-    embeddings = generate_embeddings(chunks)
+    generate_embeddings(chunks, input_type="passage")
 
     vectors = []
 

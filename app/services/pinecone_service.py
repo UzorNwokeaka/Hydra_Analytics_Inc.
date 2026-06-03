@@ -2,7 +2,7 @@ from pinecone import Pinecone, ServerlessSpec
 from app.config import settings
 
 if not settings.PINECONE_API_KEY:
-    raise ValueError("PINECONE_API_KEY is missing. Add it to your .env file.")
+    raise ValueError("PINECONE_API_KEY is missing. Add it to your environment variables.")
 
 pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 

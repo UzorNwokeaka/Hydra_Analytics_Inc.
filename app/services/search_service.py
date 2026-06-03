@@ -23,7 +23,10 @@ def semantic_search(
     jurisdiction: str | None = None,
     category: str | None = None
 ):
-    query_vector = generate_embedding(query)
+    query_vector = generate_embedding(
+        query,
+        input_type="query"
+    )
 
     results = index.query(
         vector=query_vector,

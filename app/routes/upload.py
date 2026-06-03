@@ -59,7 +59,8 @@ async def upload_legal_document(
             "message": "No text chunks could be created from this document."
         }
 
-    embeddings = generate_embeddings(chunks)
+    embeddings = generate_embeddings(chunks, input_type="passage")
+    
     regulation_id = str(uuid.uuid4())
 
     vectors = []
