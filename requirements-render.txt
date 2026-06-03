@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+python-multipart
+pydantic
+requests
+pinecone
+pypdf
+langchain-text-splitters
+ollama
