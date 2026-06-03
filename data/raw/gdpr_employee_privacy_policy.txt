@@ -1,0 +1,33 @@
+# GDPR Employee Data Privacy Policy
+
+## Purpose
+
+This policy establishes the organisation’s requirements for protecting personal data in accordance with the General Data Protection Regulation (GDPR).
+
+## Data Collection Principles
+
+Personal data must be collected lawfully, fairly, and transparently. The organisation shall only collect personal information that is necessary for legitimate business and compliance purposes.
+
+## Data Accuracy
+
+Employees responsible for maintaining personal data records must ensure that all personal information is accurate, complete, and kept up to date where necessary.
+
+## Access Control
+
+Access to personal data shall be restricted to authorised personnel only. Employees must not access or share personal information without appropriate business justification and approval.
+
+## Data Retention
+
+Personal data shall only be retained for as long as necessary to fulfil legal, regulatory, and operational requirements. Expired records must be securely deleted or anonymised.
+
+## Data Security
+
+The organisation shall implement appropriate technical and organisational security measures to protect personal data against unauthorised access, disclosure, alteration, or destruction.
+
+## Data Breach Reporting
+
+Any suspected personal data breach must be reported immediately to the Data Protection Officer and investigated in accordance with internal incident management procedures.
+
+## Employee Responsibilities
+
+All employees are required to complete annual data protection training and comply with this policy when handling personal information.

@@ -22,7 +22,6 @@ def safe_html(text):
 st.markdown(
     """
     <style>
-    /* GLOBAL ACCESSIBILITY */
     .stApp {
         background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%) !important;
         color: #000000 !important;
@@ -32,13 +31,11 @@ st.markdown(
         color: #000000 !important;
     }
 
-    /* MAIN CONTAINER */
     .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
 
-    /* SIDEBAR */
     [data-testid="stSidebar"] {
         background: #f1f4f8 !important;
         border-right: 1px solid #d0d7de !important;
@@ -66,14 +63,12 @@ st.markdown(
         box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
 
-    /* RADIO BUTTON TEXT */
     div[role="radiogroup"] label {
         font-size: 15px !important;
         font-weight: 600 !important;
         color: #000000 !important;
     }
 
-    /* DROPDOWNS */
     [data-baseweb="select"] > div {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -112,7 +107,6 @@ st.markdown(
         color: #000000 !important;
     }
 
-    /* INPUTS */
     .stTextInput input,
     .stTextArea textarea,
     .stNumberInput input {
@@ -122,12 +116,6 @@ st.markdown(
         border-radius: 8px !important;
     }
 
-    input::placeholder,
-    textarea::placeholder {
-        color: #555555 !important;
-    }
-
-    /* BUTTONS */
     .stButton > button,
     button[kind="primary"],
     button[kind="secondary"],
@@ -159,13 +147,6 @@ st.markdown(
         border: 2px solid #063f78 !important;
     }
 
-    .stButton > button:focus,
-    button:focus {
-        outline: 3px solid #ffbf47 !important;
-        color: #ffffff !important;
-    }
-
-    /* SLIDER VISIBILITY */
     [data-testid="stSlider"] * {
         color: #000000 !important;
     }
@@ -177,11 +158,6 @@ st.markdown(
         height: 20px !important;
     }
 
-    [data-testid="stSlider"] [data-baseweb="slider"] div {
-        color: #000000 !important;
-    }
-
-    /* FILE UPLOADER */
     [data-testid="stFileUploader"] {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -194,7 +170,6 @@ st.markdown(
         color: #000000 !important;
     }
 
-    /* PAGE HEADER */
     .hero-card {
         background: #ffffff;
         border: 1px solid #d0d7de;
@@ -220,7 +195,6 @@ st.markdown(
         margin-bottom: 0;
     }
 
-    /* SECTION CARDS */
     .source-card {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -269,7 +243,6 @@ st.markdown(
         margin-top: 30px;
     }
 
-    /* STREAMLIT ALERTS */
     [data-testid="stAlert"] {
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -278,12 +251,6 @@ st.markdown(
     }
 
     [data-testid="stAlert"] * {
-        color: #000000 !important;
-    }
-
-    /* JSON OUTPUT */
-    [data-testid="stJson"] {
-        background-color: #ffffff !important;
         color: #000000 !important;
     }
     </style>
@@ -298,7 +265,7 @@ st.markdown(
         <div class="main-title">⚖️ Hydra Analytics Regulatory Compliance Intelligence Platform</div>
         <div class="subtitle">
         AI-powered LegalTech platform for semantic regulatory search, compliance Q&A,
-        legal summarisation, document upload, and source-traceable RAG responses.
+        legal summarisation, document upload, and advanced compliance intelligence.
         </div>
     </div>
     """,
@@ -312,7 +279,10 @@ menu = st.sidebar.radio(
         "Semantic Search",
         "Compliance Q&A",
         "Legal Summarisation",
-        "Upload Legal Document"
+        "Upload Legal Document",
+        "Compliance Checklist",
+        "Clause Extraction",
+        "Regulatory Comparison"
     ]
 )
 
@@ -365,7 +335,6 @@ if menu == "Semantic Search":
 
         if response.status_code == 200:
             data = response.json()
-
             st.success(f"Retrieved {data['total_results']} result(s).")
 
             for i, result in enumerate(data["results"], start=1):
@@ -392,15 +361,6 @@ if menu == "Semantic Search":
 elif menu == "Compliance Q&A":
     st.header("Compliance Question Answering with Source Traceability")
 
-    st.markdown(
-        """
-        <div class="info-banner">
-        Ask a compliance question and verify the AI answer against retrieved source evidence.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
     question = st.text_area(
         "Ask a compliance question",
         "What does GDPR say about keeping personal data accurate?"
@@ -423,13 +383,10 @@ elif menu == "Compliance Q&A":
 
             with left_col:
                 st.subheader("AI-Generated Compliance Answer")
-
-                formatted_answer = safe_html(data.get("answer"))
-
                 st.markdown(
                     f"""
                     <div class="answer-box">
-                        {formatted_answer}
+                        {safe_html(data.get("answer"))}
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -437,7 +394,6 @@ elif menu == "Compliance Q&A":
 
             with right_col:
                 st.subheader("Verified Retrieved Sources")
-
                 for source in data.get("sources", []):
                     st.markdown(
                         f"""
@@ -446,10 +402,7 @@ elif menu == "Compliance Q&A":
                             <p><b>Jurisdiction:</b> {safe_html(source.get("jurisdiction"))}</p>
                             <p><b>Category:</b> {safe_html(source.get("category"))}</p>
                             <p><b>Source URL:</b> {safe_html(source.get("source_url"))}</p>
-                            <p><b>Chunk Index:</b> {safe_html(source.get("chunk_index"))}</p>
                             <p><b>Similarity Score:</b> {safe_html(source.get("score"))}</p>
-                            <hr>
-                            <p><b>Exact Retrieved Legal Text:</b></p>
                             <div class="legal-text-box">
                                 {safe_html(source.get("chunk_text"))}
                             </div>
@@ -464,20 +417,7 @@ elif menu == "Compliance Q&A":
 elif menu == "Legal Summarisation":
     st.header("Legal Document Summarisation")
 
-    st.markdown(
-        """
-        <div class="info-banner">
-        Paste legal or regulatory text and generate a concise compliance-focused summary.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    text = st.text_area(
-        "Paste legal text to summarise",
-        height=250
-    )
-
+    text = st.text_area("Paste legal text to summarise", height=250)
     max_words = st.slider("Maximum Words", 50, 500, 150)
 
     if st.button("Summarise Legal Text"):
@@ -490,15 +430,11 @@ elif menu == "Legal Summarisation":
 
         if response.status_code == 200:
             data = response.json()
-
             st.subheader("Generated Summary")
-
-            formatted_summary = safe_html(data.get("summary"))
-
             st.markdown(
                 f"""
                 <div class="answer-box">
-                    {formatted_summary}
+                    {safe_html(data.get("summary"))}
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -513,21 +449,7 @@ elif menu == "Legal Summarisation":
 elif menu == "Upload Legal Document":
     st.header("Upload and Index Legal Document")
 
-    st.markdown(
-        """
-        <div class="info-banner">
-        Upload a PDF or TXT regulatory document. The system extracts text, chunks it,
-        creates embeddings, and stores it in Pinecone for immediate semantic search.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    uploaded_file = st.file_uploader(
-        "Upload legal document",
-        type=["pdf", "txt"]
-    )
-
+    uploaded_file = st.file_uploader("Upload legal document", type=["pdf", "txt"])
     title = st.text_input("Document Title")
     source_url = st.text_input("Source URL or Reference", "uploaded-via-streamlit")
 
@@ -560,7 +482,6 @@ elif menu == "Upload Legal Document":
 
             if response.status_code == 200:
                 result = response.json()
-
                 if result.get("status") == "success":
                     st.success(result.get("message"))
                     st.json(result)
@@ -570,12 +491,211 @@ elif menu == "Upload Legal Document":
                 st.error(response.text)
 
 
+elif menu == "Compliance Checklist":
+    st.header("Compliance Checklist Generation")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Convert retrieved regulatory obligations into practical compliance action items.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    topic = st.text_input(
+        "Checklist Topic",
+        "customer due diligence"
+    )
+
+    if st.button("Generate Compliance Checklist"):
+        payload = {
+            "topic": topic,
+            "jurisdiction": jurisdiction,
+            "category": category,
+            "top_k": top_k
+        }
+
+        response = requests.post(
+            f"{API_BASE_URL}/intelligence/checklist",
+            json=payload
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            st.subheader("Generated Compliance Checklist")
+            st.markdown(
+                f"""
+                <div class="answer-box">
+                    {safe_html(data.get("checklist"))}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.subheader("Retrieved Sources")
+            for source in data.get("sources", []):
+                st.markdown(
+                    f"""
+                    <div class="source-card">
+                        <h4>[Source {safe_html(source.get("source_number"))}] {safe_html(source.get("title"))}</h4>
+                        <p><b>Jurisdiction:</b> {safe_html(source.get("jurisdiction"))}</p>
+                        <p><b>Category:</b> {safe_html(source.get("category"))}</p>
+                        <p><b>Similarity Score:</b> {safe_html(source.get("score"))}</p>
+                        <div class="legal-text-box">
+                            {safe_html(source.get("chunk_text"))}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+        else:
+            st.error(response.text)
+
+
+elif menu == "Clause Extraction":
+    st.header("Clause Extraction")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Extract obligations, deadlines, reporting duties, responsible parties, and compliance risks from legal text.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    clause_text = st.text_area(
+        "Paste legal/compliance text",
+        height=300
+    )
+
+    if st.button("Extract Compliance Clauses"):
+        payload = {
+            "text": clause_text
+        }
+
+        response = requests.post(
+            f"{API_BASE_URL}/intelligence/extract-clauses",
+            json=payload
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            st.subheader("Extracted Compliance Clauses")
+            st.markdown(
+                f"""
+                <div class="answer-box">
+                    {safe_html(data.get("extracted_clauses"))}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        else:
+            st.error(response.text)
+
+
+elif menu == "Regulatory Comparison":
+    st.header("Regulatory Comparison")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Compare compliance requirements across jurisdictions or regulatory documents.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    topic = st.text_input(
+        "Comparison Topic",
+        "personal data protection obligations"
+    )
+
+    jurisdiction_1 = st.selectbox(
+        "First Jurisdiction",
+        ["European Union", "United Kingdom", "Global", "United States", "Netherlands"],
+        index=0
+    )
+
+    jurisdiction_2 = st.selectbox(
+        "Second Jurisdiction",
+        ["European Union", "United Kingdom", "Global", "United States", "Netherlands"],
+        index=1
+    )
+
+    if st.button("Compare Regulations"):
+        payload = {
+            "topic": topic,
+            "jurisdiction_1": jurisdiction_1,
+            "jurisdiction_2": jurisdiction_2,
+            "category": category,
+            "top_k": top_k
+        }
+
+        response = requests.post(
+            f"{API_BASE_URL}/intelligence/compare",
+            json=payload
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            st.subheader("Regulatory Comparison Result")
+            st.markdown(
+                f"""
+                <div class="answer-box">
+                    {safe_html(data.get("comparison"))}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.subheader(f"Sources: {jurisdiction_1}")
+                for source in data.get("sources_1", []):
+                    st.markdown(
+                        f"""
+                        <div class="source-card">
+                            <h4>{safe_html(source.get("title"))}</h4>
+                            <p><b>Category:</b> {safe_html(source.get("category"))}</p>
+                            <div class="legal-text-box">
+                                {safe_html(source.get("chunk_text"))}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+            with col2:
+                st.subheader(f"Sources: {jurisdiction_2}")
+                for source in data.get("sources_2", []):
+                    st.markdown(
+                        f"""
+                        <div class="source-card">
+                            <h4>{safe_html(source.get("title"))}</h4>
+                            <p><b>Category:</b> {safe_html(source.get("category"))}</p>
+                            <div class="legal-text-box">
+                                {safe_html(source.get("chunk_text"))}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+        else:
+            st.error(response.text)
+
+
 st.markdown(
     """
     <div class="footer">
     <hr>
     <b>Hydra Analytics Regulatory Compliance Intelligence Platform</b><br>
-    Powered by FastAPI, Pinecone, Hugging Face Embeddings, LangChain text splitting, and Ollama/Mistral.
+    Powered by FastAPI, Pinecone, Hugging Face Embeddings, LangChain text splitting, and Ollama local LLMs.
     </div>
     """,
     unsafe_allow_html=True

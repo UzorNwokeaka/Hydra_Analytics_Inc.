@@ -1,0 +1,33 @@
+# Anti-Money Laundering Customer Due Diligence Policy
+
+## Purpose
+
+This policy outlines the organisation’s anti-money laundering (AML) customer due diligence requirements to prevent financial crime and comply with regulatory obligations.
+
+## Customer Identification
+
+Before establishing a business relationship, employees must verify the identity of all customers using reliable and independent documentation.
+
+## Beneficial Ownership
+
+The organisation must identify and verify the beneficial owners of corporate customers and assess ownership structures to detect potential financial crime risks.
+
+## Risk Assessment
+
+Customers shall be assessed according to risk factors including jurisdiction, transaction behaviour, politically exposed person status, and business activities.
+
+## Enhanced Due Diligence
+
+Enhanced due diligence procedures must be applied to high-risk customers, including additional identity verification and ongoing monitoring.
+
+## Ongoing Monitoring
+
+Customer transactions must be continuously monitored to identify suspicious behaviour, unusual transaction patterns, or potential money laundering activity.
+
+## Suspicious Activity Reporting
+
+Employees are required to report suspicious transactions or unusual customer activity immediately to the Money Laundering Reporting Officer.
+
+## Record Retention
+
+AML compliance records, customer identification documents, and transaction monitoring evidence must be retained in accordance with applicable regulatory retention periods.

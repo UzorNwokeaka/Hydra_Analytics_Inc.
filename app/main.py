@@ -1,23 +1,32 @@
 from fastapi import FastAPI
-from app.routes import search, qa, summarize, upload
+from app.routes import search, qa, summarize, upload, intelligence
 
 app = FastAPI(
     title="Hydra Analytics Regulatory Compliance Intelligence API",
-    description="RAG-powered semantic legal search, compliance Q&A, document upload, and legal summarisation API.",
-    version="1.0.0"
+    description=(
+        "RAG-powered semantic legal search, compliance Q&A, document upload, "
+        "legal summarisation, and advanced compliance intelligence API."
+    ),
+    version="2.0.0"
 )
 
 app.include_router(search.router, prefix="/search", tags=["Semantic Search"])
 app.include_router(qa.router, prefix="/qa", tags=["Compliance Q&A"])
 app.include_router(summarize.router, prefix="/summarize", tags=["Legal Summarisation"])
 app.include_router(upload.router, prefix="/upload", tags=["Document Upload"])
+app.include_router(
+    intelligence.router,
+    prefix="/intelligence",
+    tags=["Advanced Compliance Intelligence"]
+)
 
 
 @app.get("/")
 def root():
     return {
         "status": "success",
-        "message": "Hydra Analytics Compliance Intelligence API is running."
+        "message": "Hydra Analytics Compliance Intelligence API is running.",
+        "version": "2.0.0"
     }
 
 
@@ -25,5 +34,6 @@ def root():
 def health_check():
     return {
         "status": "healthy",
-        "service": "hydra-compliance-rag-api"
+        "service": "hydra-compliance-rag-api",
+        "version": "2.0.0"
     }
