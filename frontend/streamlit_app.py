@@ -1,10 +1,13 @@
+import os
 import html
 import requests
 import streamlit as st
 
 
-API_BASE_URL = "http://127.0.0.1:8000"
-
+API_BASE_URL = os.getenv(
+    "API_BASE_URL",
+    "http://127.0.0.1:8000"
+)
 
 st.set_page_config(
     page_title="Hydra Analytics Compliance Intelligence",
@@ -461,93 +464,6 @@ elif menu == "Compliance Q&A":
         else:
             st.error(response.text)
             
-#     st.header("Compliance Question Answering with Source Traceability")
-
-#     question = st.text_area(
-#         "Ask a compliance question",
-#         "What does GDPR say about keeping personal data accurate?"
-#     )
-
-#     if st.button("Generate Source-Grounded Answer"):
-#         payload = {
-#             "question": question,
-#             "jurisdiction": jurisdiction,
-#             "category": category,
-#             "top_k": top_k
-#         }
-
-#         response = requests.post(f"{API_BASE_URL}/qa/", json=payload)
-
-#         if response.status_code == 200:
-#             data = response.json()
-
-#             left_col, right_col = st.columns([1.05, 1])
-
-#             with left_col:
-#                 st.subheader("AI-Generated Compliance Answer")
-#                 st.markdown(
-#                     f"""
-#                     <div class="answer-box">
-#                         {safe_html(data.get("answer"))}
-#                     </div>
-#                     """,
-#                     unsafe_allow_html=True
-#                 )
-
-#             with right_col:
-#                 st.subheader("Verified Retrieved Sources")
-#                 for source in data.get("sources", []):
-#                     st.markdown(
-#                         f"""
-#                         <div class="source-card">
-#                             <h4>[Source {safe_html(source.get("source_number"))}] {safe_html(source.get("title"))}</h4>
-#                             <p><b>Jurisdiction:</b> {safe_html(source.get("jurisdiction"))}</p>
-#                             <p><b>Category:</b> {safe_html(source.get("category"))}</p>
-#                             <p><b>Source URL:</b> {safe_html(source.get("source_url"))}</p>
-#                             <p><b>Similarity Score:</b> {safe_html(source.get("score"))}</p>
-#                             <div class="legal-text-box">
-#                                 {safe_html(source.get("chunk_text"))}
-#                             </div>
-#                         </div>
-#                         """,
-#                         unsafe_allow_html=True
-#                     )
-#         else:
-#             st.error(response.text)
-
-
-# elif menu == "Legal Summarisation":
-#     st.header("Legal Document Summarisation")
-
-#     text = st.text_area("Paste legal text to summarise", height=250)
-#     max_words = st.slider("Maximum Words", 50, 500, 150)
-
-#     if st.button("Summarise Legal Text"):
-#         payload = {
-#             "text": text,
-#             "max_words": max_words
-#         }
-
-#         response = requests.post(f"{API_BASE_URL}/summarize/", json=payload)
-
-#         if response.status_code == 200:
-#             data = response.json()
-#             st.subheader("Generated Summary")
-#             st.markdown(
-#                 f"""
-#                 <div class="answer-box">
-#                     {safe_html(data.get("summary"))}
-#                 </div>
-#                 """,
-#                 unsafe_allow_html=True
-#             )
-
-#             if "disclaimer" in data:
-#                 st.info(data["disclaimer"])
-#         else:
-#             st.error(response.text)
-
-
 elif menu == "Upload Legal Document":
     st.header("Upload and Index Legal Document")
 
