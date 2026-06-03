@@ -93,3 +93,18 @@ FastAPI Backend
 Streamlit Frontend
         ↓
 Semantic Search / Q&A / Summarisation
+
+## Production Readiness
+
+This project includes:
+
+- Automated backend tests using Pytest
+- GitHub Actions CI workflow
+- Dockerfile for containerised backend execution
+- Docker Compose configuration
+- Environment variable separation using `.env`
+
+## Run Tests
+
+```bash
+pytest
