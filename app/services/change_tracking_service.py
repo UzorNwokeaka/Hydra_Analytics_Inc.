@@ -1,6 +1,6 @@
 import difflib
 import time
-import ollama
+from app.services.llm_service import generate_llm_response
 
 from app.services.audit_service import write_audit_log
 
@@ -98,10 +98,7 @@ Strict rules:
 - Keep the tone suitable for legal, compliance, and executive stakeholders.
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    llm_output = generate_llm_response(prompt)
 
     response_time_seconds = round(time.perf_counter() - start_time, 2)
 
@@ -111,7 +108,7 @@ Strict rules:
         "new_version_label": new_version_label,
         "added_items": diff_result["added_text"],
         "removed_items": diff_result["removed_text"],
-        "change_analysis": response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER,
+        "change_analysis": llm_output + "\n\n" + LEGAL_DISCLAIMER,
         "response_time_seconds": response_time_seconds
     }
 

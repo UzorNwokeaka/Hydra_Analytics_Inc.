@@ -1,4 +1,4 @@
-import ollama
+from app.services.llm_service import generate_llm_response
 
 
 LEGAL_DISCLAIMER = (
@@ -28,14 +28,6 @@ Legal Text:
 Summary:
 """
 
-    response = ollama.chat(
-        model="llama3.2:3b",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+    llm_output = generate_llm_response(prompt, model="mistral")
 
-    return response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER
+    return llm_output + "\n\n" + LEGAL_DISCLAIMER

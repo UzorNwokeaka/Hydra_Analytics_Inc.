@@ -1,4 +1,4 @@
-import ollama
+from app.services.llm_service import generate_llm_response
 from app.services.search_service import semantic_search
 
 
@@ -171,15 +171,11 @@ Strict rules:
 - Use clear bullet points.
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    llm_output = generate_llm_response(prompt)
 
     return {
-        "extracted_clauses": response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER
+        "comparison": llm_output + "\n\n" + LEGAL_DISCLAIMER,
     }
-
 
 def generate_compliance_checklist(
     topic: str,

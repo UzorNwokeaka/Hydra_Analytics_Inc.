@@ -1,5 +1,5 @@
 import time
-import ollama
+from app.services.llm_service import generate_llm_response
 
 from app.services.search_service import semantic_search
 from app.services.audit_service import write_audit_log
@@ -91,18 +91,9 @@ User Question:
 Answer:
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+    llm_output = generate_llm_response(prompt)
 
-    return response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER
-
+    return llm_output + "\n\n" + LEGAL_DISCLAIMER
 
 def answer_question(
     question: str,
