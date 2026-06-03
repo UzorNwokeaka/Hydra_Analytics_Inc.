@@ -282,7 +282,8 @@ menu = st.sidebar.radio(
         "Upload Legal Document",
         "Compliance Checklist",
         "Clause Extraction",
-        "Regulatory Comparison"
+        "Regulatory Comparison",
+        "Audit Logs"
     ]
 )
 
@@ -361,6 +362,15 @@ if menu == "Semantic Search":
 elif menu == "Compliance Q&A":
     st.header("Compliance Question Answering with Source Traceability")
 
+    st.markdown(
+        """
+        <div class="info-banner">
+        Ask a compliance question and verify the AI response against retrieved legal evidence, confidence scoring, and risk classification.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     question = st.text_area(
         "Ask a compliance question",
         "What does GDPR say about keeping personal data accurate?"
@@ -374,10 +384,45 @@ elif menu == "Compliance Q&A":
             "top_k": top_k
         }
 
-        response = requests.post(f"{API_BASE_URL}/qa/", json=payload)
+        with st.spinner("Retrieving sources and generating compliance response..."):
+            response = requests.post(f"{API_BASE_URL}/qa/", json=payload)
 
         if response.status_code == 200:
             data = response.json()
+
+            confidence = data.get("confidence", {})
+            risk = data.get("risk", {})
+
+            metric_col1, metric_col2, metric_col3 = st.columns(3)
+
+            with metric_col1:
+                st.metric(
+                    "Retrieval Confidence",
+                    confidence.get("confidence_label", "Unknown")
+                )
+
+            with metric_col2:
+                st.metric(
+                    "Compliance Risk",
+                    risk.get("risk_level", "Unknown")
+                )
+
+            with metric_col3:
+                st.metric(
+                    "Response Time",
+                    f"{data.get('response_time_seconds', 'N/A')} sec"
+                )
+
+            st.markdown(
+                f"""
+                <div class="source-card">
+                    <p><b>Confidence Explanation:</b> {safe_html(confidence.get("confidence_explanation"))}</p>
+                    <p><b>Average Retrieval Score:</b> {safe_html(confidence.get("average_score"))}</p>
+                    <p><b>Risk Rationale:</b> {safe_html(risk.get("risk_rationale"))}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             left_col, right_col = st.columns([1.05, 1])
 
@@ -394,6 +439,7 @@ elif menu == "Compliance Q&A":
 
             with right_col:
                 st.subheader("Verified Retrieved Sources")
+
                 for source in data.get("sources", []):
                     st.markdown(
                         f"""
@@ -402,6 +448,7 @@ elif menu == "Compliance Q&A":
                             <p><b>Jurisdiction:</b> {safe_html(source.get("jurisdiction"))}</p>
                             <p><b>Category:</b> {safe_html(source.get("category"))}</p>
                             <p><b>Source URL:</b> {safe_html(source.get("source_url"))}</p>
+                            <p><b>Chunk Index:</b> {safe_html(source.get("chunk_index"))}</p>
                             <p><b>Similarity Score:</b> {safe_html(source.get("score"))}</p>
                             <div class="legal-text-box">
                                 {safe_html(source.get("chunk_text"))}
@@ -412,38 +459,92 @@ elif menu == "Compliance Q&A":
                     )
         else:
             st.error(response.text)
+            
+#     st.header("Compliance Question Answering with Source Traceability")
+
+#     question = st.text_area(
+#         "Ask a compliance question",
+#         "What does GDPR say about keeping personal data accurate?"
+#     )
+
+#     if st.button("Generate Source-Grounded Answer"):
+#         payload = {
+#             "question": question,
+#             "jurisdiction": jurisdiction,
+#             "category": category,
+#             "top_k": top_k
+#         }
+
+#         response = requests.post(f"{API_BASE_URL}/qa/", json=payload)
+
+#         if response.status_code == 200:
+#             data = response.json()
+
+#             left_col, right_col = st.columns([1.05, 1])
+
+#             with left_col:
+#                 st.subheader("AI-Generated Compliance Answer")
+#                 st.markdown(
+#                     f"""
+#                     <div class="answer-box">
+#                         {safe_html(data.get("answer"))}
+#                     </div>
+#                     """,
+#                     unsafe_allow_html=True
+#                 )
+
+#             with right_col:
+#                 st.subheader("Verified Retrieved Sources")
+#                 for source in data.get("sources", []):
+#                     st.markdown(
+#                         f"""
+#                         <div class="source-card">
+#                             <h4>[Source {safe_html(source.get("source_number"))}] {safe_html(source.get("title"))}</h4>
+#                             <p><b>Jurisdiction:</b> {safe_html(source.get("jurisdiction"))}</p>
+#                             <p><b>Category:</b> {safe_html(source.get("category"))}</p>
+#                             <p><b>Source URL:</b> {safe_html(source.get("source_url"))}</p>
+#                             <p><b>Similarity Score:</b> {safe_html(source.get("score"))}</p>
+#                             <div class="legal-text-box">
+#                                 {safe_html(source.get("chunk_text"))}
+#                             </div>
+#                         </div>
+#                         """,
+#                         unsafe_allow_html=True
+#                     )
+#         else:
+#             st.error(response.text)
 
 
-elif menu == "Legal Summarisation":
-    st.header("Legal Document Summarisation")
+# elif menu == "Legal Summarisation":
+#     st.header("Legal Document Summarisation")
 
-    text = st.text_area("Paste legal text to summarise", height=250)
-    max_words = st.slider("Maximum Words", 50, 500, 150)
+#     text = st.text_area("Paste legal text to summarise", height=250)
+#     max_words = st.slider("Maximum Words", 50, 500, 150)
 
-    if st.button("Summarise Legal Text"):
-        payload = {
-            "text": text,
-            "max_words": max_words
-        }
+#     if st.button("Summarise Legal Text"):
+#         payload = {
+#             "text": text,
+#             "max_words": max_words
+#         }
 
-        response = requests.post(f"{API_BASE_URL}/summarize/", json=payload)
+#         response = requests.post(f"{API_BASE_URL}/summarize/", json=payload)
 
-        if response.status_code == 200:
-            data = response.json()
-            st.subheader("Generated Summary")
-            st.markdown(
-                f"""
-                <div class="answer-box">
-                    {safe_html(data.get("summary"))}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+#         if response.status_code == 200:
+#             data = response.json()
+#             st.subheader("Generated Summary")
+#             st.markdown(
+#                 f"""
+#                 <div class="answer-box">
+#                     {safe_html(data.get("summary"))}
+#                 </div>
+#                 """,
+#                 unsafe_allow_html=True
+#             )
 
-            if "disclaimer" in data:
-                st.info(data["disclaimer"])
-        else:
-            st.error(response.text)
+#             if "disclaimer" in data:
+#                 st.info(data["disclaimer"])
+#         else:
+#             st.error(response.text)
 
 
 elif menu == "Upload Legal Document":
@@ -689,6 +790,55 @@ elif menu == "Regulatory Comparison":
         else:
             st.error(response.text)
 
+elif menu == "Audit Logs":
+    st.header("Audit Logs")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Review recent compliance Q&A interactions for governance, traceability, and audit monitoring.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    limit = st.slider("Number of Audit Records", 5, 100, 20)
+
+    if st.button("Load Audit Logs"):
+        response = requests.get(
+            f"{API_BASE_URL}/audit/logs",
+            params={"limit": limit}
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            logs = data.get("audit_logs", [])
+
+            if not logs:
+                st.info("No audit logs found yet. Run a Compliance Q&A query first.")
+            else:
+                for i, log in enumerate(reversed(logs), start=1):
+                    confidence = log.get("confidence", {})
+                    risk = log.get("risk", {})
+
+                    st.markdown(
+                        f"""
+                        <div class="source-card">
+                            <h4>Audit Record {i}</h4>
+                            <p><b>Timestamp:</b> {safe_html(log.get("timestamp"))}</p>
+                            <p><b>Question:</b> {safe_html(log.get("question"))}</p>
+                            <p><b>Jurisdiction:</b> {safe_html(log.get("jurisdiction"))}</p>
+                            <p><b>Category:</b> {safe_html(log.get("category"))}</p>
+                            <p><b>Source Count:</b> {safe_html(log.get("source_count"))}</p>
+                            <p><b>Confidence:</b> {safe_html(confidence.get("confidence_label"))}</p>
+                            <p><b>Risk Level:</b> {safe_html(risk.get("risk_level"))}</p>
+                            <p><b>Response Time:</b> {safe_html(log.get("response_time_seconds"))} seconds</p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+        else:
+            st.error(response.text)
 
 st.markdown(
     """

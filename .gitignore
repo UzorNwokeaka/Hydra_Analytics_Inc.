@@ -26,3 +26,6 @@ Thumbs.db
 
 # Local model cache
 models/
+
+# Audit Logs
+data/audit_logs/

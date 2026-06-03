@@ -1,6 +1,15 @@
+import time
 import ollama
-from app.services.search_service import semantic_search
 
+from app.services.search_service import semantic_search
+from app.services.audit_service import write_audit_log
+from app.services.explainability_service import (
+    calculate_retrieval_confidence,
+    classify_compliance_risk
+)
+
+
+MODEL_NAME = "llama3.2:3b"
 
 LEGAL_DISCLAIMER = (
     "This response is generated from retrieved compliance documents and is intended "
@@ -83,7 +92,7 @@ Answer:
 """
 
     response = ollama.chat(
-        model="mistral",
+        model=MODEL_NAME,
         messages=[
             {
                 "role": "user",
@@ -101,6 +110,8 @@ def answer_question(
     jurisdiction: str | None = None,
     category: str | None = None
 ):
+    start_time = time.perf_counter()
+
     matches = semantic_search(
         query=question,
         top_k=top_k,
@@ -109,12 +120,43 @@ def answer_question(
     )
 
     context = build_context(matches)
-    answer = generate_grounded_answer(question, context)
     sources = build_sources(matches)
+    answer = generate_grounded_answer(question, context)
+
+    confidence = calculate_retrieval_confidence(sources)
+    risk = classify_compliance_risk(answer, sources)
+
+    response_time_seconds = round(time.perf_counter() - start_time, 2)
+
+    audit_event = {
+        "event_type": "compliance_qa",
+        "question": question,
+        "jurisdiction": jurisdiction,
+        "category": category,
+        "top_k": top_k,
+        "source_count": len(sources),
+        "confidence": confidence,
+        "risk": risk,
+        "response_time_seconds": response_time_seconds,
+        "sources": [
+            {
+                "title": source.get("title"),
+                "jurisdiction": source.get("jurisdiction"),
+                "category": source.get("category"),
+                "score": source.get("score")
+            }
+            for source in sources
+        ]
+    }
+
+    write_audit_log(audit_event)
 
     return {
         "question": question,
         "answer": answer,
         "sources": sources,
-        "source_count": len(sources)
+        "source_count": len(sources),
+        "confidence": confidence,
+        "risk": risk,
+        "response_time_seconds": response_time_seconds
     }
