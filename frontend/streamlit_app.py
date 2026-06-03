@@ -283,7 +283,8 @@ menu = st.sidebar.radio(
         "Compliance Checklist",
         "Clause Extraction",
         "Regulatory Comparison",
-        "Audit Logs"
+        "Audit Logs",
+        "Regulatory Change Tracking"
     ]
 )
 
@@ -837,6 +838,125 @@ elif menu == "Audit Logs":
                         """,
                         unsafe_allow_html=True
                     )
+        else:
+            st.error(response.text)
+            
+elif menu == "Regulatory Change Tracking":
+    st.header("Regulatory Change Tracking")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Compare two versions of a regulation or compliance policy to identify additions,
+        removals, modified obligations, compliance impact, and recommended actions.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    document_title = st.text_input(
+        "Document Title",
+        "Data Privacy Policy"
+    )
+
+    old_version_label = st.text_input(
+        "Old Version Label",
+        "2025 Version"
+    )
+
+    new_version_label = st.text_input(
+        "New Version Label",
+        "2026 Version"
+    )
+
+    old_text = st.text_area(
+        "Paste Old Version Text",
+        height=220,
+        value=(
+            "Personal data must be processed lawfully, fairly and transparently. "
+            "Personal data must be retained only for as long as necessary. "
+            "Employees must report suspected data breaches to the Data Protection Officer."
+        )
+    )
+
+    new_text = st.text_area(
+        "Paste New Version Text",
+        height=220,
+        value=(
+            "Personal data must be processed lawfully, fairly and transparently. "
+            "Personal data must be retained only for as long as necessary and reviewed every 12 months. "
+            "Employees must report suspected data breaches to the Data Protection Officer immediately. "
+            "All employees must complete annual data protection training."
+        )
+    )
+
+    if st.button("Analyse Regulatory Changes"):
+        payload = {
+            "document_title": document_title,
+            "old_version_label": old_version_label,
+            "new_version_label": new_version_label,
+            "old_text": old_text,
+            "new_text": new_text
+        }
+
+        with st.spinner("Comparing versions and analysing compliance impact..."):
+            response = requests.post(
+                f"{API_BASE_URL}/change-tracking/compare-versions",
+                json=payload
+            )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            st.subheader("Regulatory Change Analysis")
+
+            st.markdown(
+                f"""
+                <div class="answer-box">
+                    {safe_html(data.get("change_analysis"))}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.subheader("Added Requirements")
+                added_items = data.get("added_items", [])
+
+                if added_items:
+                    for item in added_items:
+                        st.markdown(
+                            f"""
+                            <div class="source-card">
+                                {safe_html(item)}
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+                else:
+                    st.info("No additions detected.")
+
+            with col2:
+                st.subheader("Removed Requirements")
+                removed_items = data.get("removed_items", [])
+
+                if removed_items:
+                    for item in removed_items:
+                        st.markdown(
+                            f"""
+                            <div class="source-card">
+                                {safe_html(item)}
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+                else:
+                    st.info("No removals detected.")
+
+            st.info(f"Response Time: {data.get('response_time_seconds')} seconds")
+
         else:
             st.error(response.text)
 

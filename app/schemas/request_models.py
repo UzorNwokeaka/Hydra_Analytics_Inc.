@@ -38,3 +38,10 @@ class ChecklistRequest(BaseModel):
     jurisdiction: Optional[str] = None
     category: Optional[str] = None
     top_k: int = Field(default=3, ge=1, le=10)
+    
+class RegulatoryChangeRequest(BaseModel):
+    document_title: str = Field(..., min_length=3)
+    old_version_label: str = Field(default="Previous Version")
+    new_version_label: str = Field(default="Current Version")
+    old_text: str = Field(..., min_length=20)
+    new_text: str = Field(..., min_length=20)
