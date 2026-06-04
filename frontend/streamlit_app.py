@@ -463,6 +463,65 @@ elif menu == "Compliance Q&A":
                     )
         else:
             st.error(response.text)
+
+elif menu == "Legal Summarisation":
+    st.header("Legal Document Summarisation")
+
+    st.markdown(
+        """
+        <div class="info-banner">
+        Paste legal or regulatory text below and generate a concise compliance-focused summary.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    text = st.text_area(
+        "Paste legal text to summarise",
+        placeholder="Paste GDPR, AML, ESG, policy, or regulatory text here...",
+        height=300
+    )
+
+    max_words = st.slider(
+        "Maximum Words",
+        min_value=50,
+        max_value=500,
+        value=150
+    )
+
+    if st.button("Summarise Legal Text"):
+        if not text.strip():
+            st.error("Please paste legal text before generating a summary.")
+        else:
+            payload = {
+                "text": text,
+                "max_words": max_words
+            }
+
+            with st.spinner("Generating legal summary..."):
+                response = requests.post(
+                    f"{API_BASE_URL}/summarize/",
+                    json=payload
+                )
+
+            if response.status_code == 200:
+                data = response.json()
+
+                st.subheader("Generated Summary")
+
+                st.markdown(
+                    f"""
+                    <div class="answer-box">
+                        {safe_html(data.get("summary"))}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                if "disclaimer" in data:
+                    st.info(data["disclaimer"])
+            else:
+                st.error(response.text)
             
 elif menu == "Upload Legal Document":
     st.header("Upload and Index Legal Document")
