@@ -44,3 +44,17 @@ app.include_router(
     prefix="/change-tracking",
     tags=["Regulatory Change Tracking"]
 )
+
+
+@app.get("/debug-config")
+def debug_config():
+    from app.config import settings
+
+    return {
+        "llm_provider": settings.LLM_PROVIDER,
+        "groq_model": settings.GROQ_MODEL,
+        "groq_key_present": bool(settings.GROQ_API_KEY),
+        "embedding_provider": settings.EMBEDDING_PROVIDER,
+        "pinecone_index": settings.PINECONE_INDEX_NAME,
+        "is_render": settings.IS_RENDER
+    }
