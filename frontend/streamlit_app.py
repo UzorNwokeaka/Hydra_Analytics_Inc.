@@ -464,7 +464,7 @@ elif menu == "Compliance Q&A":
         else:
             st.error(response.text)
 
-elif menu == "Legal Summarisation":
+elif menu == "Legal Summarization":
     st.header("Legal Document Summarisation")
 
     st.markdown(
