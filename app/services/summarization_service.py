@@ -28,6 +28,6 @@ Legal Text:
 Summary:
 """
 
-    llm_output = generate_llm_response(prompt, model="mistral")
+    llm_output = generate_llm_response(prompt)
 
     return llm_output + "\n\n" + LEGAL_DISCLAIMER
