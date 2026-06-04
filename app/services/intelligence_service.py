@@ -2,8 +2,6 @@ from app.services.llm_service import generate_llm_response
 from app.services.search_service import semantic_search
 
 
-MODEL_NAME = "llama3.2:3b"
-
 LEGAL_DISCLAIMER = (
     "This output is generated from retrieved compliance documents and is intended "
     "for regulatory research support only. It should not be treated as formal legal advice "
@@ -83,6 +81,7 @@ def generate_regulatory_comparison(
             "topic": topic,
             "jurisdiction_1": jurisdiction_1,
             "jurisdiction_2": jurisdiction_2,
+            "category": category,
             "comparison": (
                 "Information not found in the available regulatory knowledge base.\n\n"
                 + LEGAL_DISCLAIMER
@@ -128,17 +127,14 @@ Strict rules:
 - Keep the tone professional and suitable for legal/compliance teams.
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    llm_output = generate_llm_response(prompt)
 
     return {
         "topic": topic,
         "jurisdiction_1": jurisdiction_1,
         "jurisdiction_2": jurisdiction_2,
         "category": category,
-        "comparison": response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER,
+        "comparison": llm_output + "\n\n" + LEGAL_DISCLAIMER,
         "sources_1": _build_sources(results_1),
         "sources_2": _build_sources(results_2)
     }
@@ -174,8 +170,9 @@ Strict rules:
     llm_output = generate_llm_response(prompt)
 
     return {
-        "comparison": llm_output + "\n\n" + LEGAL_DISCLAIMER,
+        "extracted_clauses": llm_output + "\n\n" + LEGAL_DISCLAIMER
     }
+
 
 def generate_compliance_checklist(
     topic: str,
@@ -195,6 +192,8 @@ def generate_compliance_checklist(
     if not context.strip():
         return {
             "topic": topic,
+            "jurisdiction": jurisdiction,
+            "category": category,
             "checklist": (
                 "Information not found in the available regulatory knowledge base.\n\n"
                 + LEGAL_DISCLAIMER
@@ -234,15 +233,12 @@ Strict rules:
 - Make the checklist practical for compliance analysts.
 """
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}]
-    )
+    llm_output = generate_llm_response(prompt)
 
     return {
         "topic": topic,
         "jurisdiction": jurisdiction,
         "category": category,
-        "checklist": response["message"]["content"] + "\n\n" + LEGAL_DISCLAIMER,
+        "checklist": llm_output + "\n\n" + LEGAL_DISCLAIMER,
         "sources": _build_sources(results)
     }
