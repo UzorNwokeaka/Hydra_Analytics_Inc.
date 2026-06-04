@@ -281,7 +281,7 @@ menu = st.sidebar.radio(
     [
         "Semantic Search",
         "Compliance Q&A",
-        "Legal Summarisation",
+        "Legal Summarization",
         "Upload Legal Document",
         "Compliance Checklist",
         "Clause Extraction",
@@ -465,7 +465,7 @@ elif menu == "Compliance Q&A":
             st.error(response.text)
 
 elif menu == "Legal Summarization":
-    st.header("Legal Document Summarisation")
+    st.header("Legal Document Summarization")
 
     st.markdown(
         """
