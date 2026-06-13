@@ -1,6 +1,6 @@
 # ⚖️ Hydra Analytics Regulatory Compliance Intelligence Platform
 
-AI-powered LegalTech platform for semantic regulatory search, compliance question answering, legal summarisation, and explainable compliance intelligence using Retrieval-Augmented Generation (RAG).
+AI-powered LegalTech platform for semantic regulatory search, compliance question answering, legal summarisation, and explainable compliance intelligence using Retrieval-Augmented Generation (RAG)
 
 ---
 
